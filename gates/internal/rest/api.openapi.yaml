@@ -1,0 +1,16 @@
+openapiOptions:
+  file:
+    - file: "gatespb/api.proto"
+      option:
+        info:
+          title: Time Processing
+          version: "1.0.0"
+        basePath: /
+  method:
+    - method: gatespb.GatesService.GetTime
+      option:
+        operationId: getTime
+        tags:
+          - Time
+        summary: Ask new time
+

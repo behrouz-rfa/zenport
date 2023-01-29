@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package gatespb;
+
+
+service GatesService {
+  rpc GetTime(GetTimeRequest) returns (GetTimeResponse) {}
+}
+
+
+message GetTimeRequest {
+  string ask = 1;
+}
+message GetTimeResponse{
+  string time = 2;
+
+}
