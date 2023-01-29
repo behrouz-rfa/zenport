@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package ntpspb;
+
+message TimeCreated {
+  string id = 1;
+  string time = 2;
+}

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package timespb;
+
+
+import "ntpspb/messages.proto";
+
+service TimeService {
+  rpc GetTime(GetTimeRequest) returns (GetTimeResponse) {}
+}
+
+
+message GetTimeRequest {
+  string time = 1;
+}
+message GetTimeResponse {
+  string time = 2;
+
+}
