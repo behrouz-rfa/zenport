@@ -22,7 +22,7 @@ func LogApplicationAccess(application application.App, logger zerolog.Logger) Ap
 	}
 }
 
-func (a Application) NotifyOrderCreated(ctx context.Context, notify application.OrderCreated) (err error) {
+func (a Application) NotifyTimeCreated(ctx context.Context, notify application.TimeCreated) (err error) {
 	a.logger.Info().Msg("--> Notifications.NotifyTimeCreated")
 	defer func() { a.logger.Info().Err(err).Msg("<-- Notifications.NotifyTimeCreated") }()
 	return a.App.NotifyTimeCreated(ctx, notify)
