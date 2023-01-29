@@ -74,7 +74,7 @@ services:
     depends_on:
       - nats
       - postgres
-#      - rabbit1
+      - rabbit1
     command: [ "./wait-for", "postgres:5432", "--", "/zenports/service" ]
     profiles:
       - microservices
@@ -120,7 +120,7 @@ services:
     depends_on:
       - nats
       - postgres
-#      - rabbit1
+      - rabbit1
     command: [ "./wait-for", "postgres:5432", "--", "/zenports/service" ]
     profiles:
       - microservices
