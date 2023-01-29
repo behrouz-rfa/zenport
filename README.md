@@ -2,21 +2,27 @@
 
 ### Golang [zenport]() is a simple Even Driven Architector
 
-#### 👨‍💻 Full list what has been used:
+#### 🙌👨‍💻🚀 Docker-compose files easy lunch:
 
-* [fasthttp](github.com/valyala/fasthttp/) - fasthttp
-* [color](github.com/fatih/color/) - fatih color
-* [Console Std Out](github.com/apoorvam/gotermina) - gotermina
+    docker-compose.yml
+    sudo docker compose up 
+
+```
+curl -X 'POST' \
+'http://localhost:8080/api/times' \
+-H 'accept: application/json' \
+-H 'Content-Type: application/json' \
+-d '{
+"ask": "What time is it?"
+}'
+
+```
 
 #### Recommendation for local development most comfortable usage:
 
     make run   // run the application
     make race // run the application with  race flag
     make integration-test // run integration test
-
-#### 🙌👨‍💻🚀 Docker-compose files:
-
-    docker-compose.yml
 
 ## Using
 

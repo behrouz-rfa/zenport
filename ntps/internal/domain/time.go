@@ -16,7 +16,7 @@ type Time struct {
 const NtpAggregate = "npts.Time"
 
 var (
-	ErrStoreNameIsBlank = errors.Wrap(errors.ErrBadRequest, "input is not found current inpyt is: What time is it?")
+	ErrStoreNameIsBlank = errors.Wrap(errors.ErrBadRequest, "it's wrong question ask : What time is it?")
 )
 var _ interface {
 	es.EventApplier

@@ -31,6 +31,7 @@ func Root(ctx context.Context, mono system.Service) (err error) {
 	if err := ntpspb.Registrations(reg); err != nil {
 		return err
 	}
+
 	//work with nats or rabbitq
 	var eventStream am.EventStream
 	if mono.Config().RABBITMQC.IsEnable {

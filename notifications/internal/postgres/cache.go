@@ -14,7 +14,7 @@ type NtpCacheRepository struct {
 
 func (n NtpCacheRepository) ShowRequest(ctx context.Context, id, time string) error {
 	fmt.Println("Event Added to cache", id, time)
-	const query = "INSERT INTO %s (id ,time) VALUES($1,$1)"
+	const query = "INSERT INTO %s (id ,time) VALUES($1,$2)"
 	_, err := n.db.ExecContext(ctx, n.table(query), id, time)
 	if err != nil {
 		return err
