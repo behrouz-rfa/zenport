@@ -18,21 +18,23 @@ func (m Module) Startup(ctx context.Context, mono monolith.Monolith) error {
 }
 
 func Root(ctx context.Context, mono system.Service) (err error) {
-	//
+	// setup Driven adapters
 	timeRepo := postgres.NewTimeRepository("ntps.time", mono.DB())
 	conn, err := grpc.Dial(ctx, mono.Config().Rpc.Address())
 	if err != nil {
 		return err
 	}
 	ntps := grpc.NewNtpRepository(conn)
+
+	// setup application
 	var app application.App
 	app = application.NewApplication(timeRepo, ntps)
 	app = logging.LogApplicationAccess(app, mono.Logger())
 
+	// setup Driver adapters
 	if err := grpc.RegisterServer(app, mono.RPC()); err != nil {
 		return err
 	}
-
 	if err := rest.RegisterGateway(ctx, mono.Mux(), mono.Config().Rpc.Address()); err != nil {
 		return err
 	}

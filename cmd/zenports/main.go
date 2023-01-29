@@ -32,6 +32,7 @@ func main() {
 }
 
 func run() (err error) {
+
 	var cfg config.AppConfig
 	// parse config/env/...
 	cfg, err = config.InitConfig()
@@ -39,6 +40,7 @@ func run() (err error) {
 		return err
 	}
 
+	//create app
 	m := app{cfg: cfg}
 
 	// init infrastructure...
@@ -68,9 +70,13 @@ func run() (err error) {
 	//init rabbitqm session
 	m.rb_session = rb.Redial(context.Background(), cfg.RB.URL, cfg.RB.Exchange)
 
+	//set logger
 	m.logger = initLogger(cfg)
+	//set rpc config
 	m.rpc = initRpc(cfg.Rpc)
+	//set  chi mux
 	m.mux = initMux(cfg.Web)
+	//create waiter : waiter for catch signal for interrupt disconnect rpc rabitq nats
 	m.waiter = waiter.New(waiter.CatchSignals())
 
 	// init modules
@@ -90,68 +96,6 @@ func run() (err error) {
 
 	fmt.Println("started zenport application")
 	defer fmt.Println("stopped zenport application")
-
-	m.waiter.Add(
-		m.waitForWeb,
-		m.waitForRPC,
-		m.waitForStream,
-	)
-
-	return m.waiter.Wait()
-}
-func run3() (err error) {
-	var cfg config.AppConfig
-	// parse config/env/...
-	cfg, err = config.InitConfig()
-	if err != nil {
-		return err
-	}
-
-	m := app{cfg: cfg}
-
-	// init infrastructure...
-	// init db
-	m.db, err = sql.Open("pgx", cfg.PG.Conn)
-	if err != nil {
-		return err
-	}
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-			return
-		}
-	}(m.db)
-	// init nats & jetstream
-	m.nc, err = nats.Connect(cfg.Nats.URL)
-	if err != nil {
-		return err
-	}
-	defer m.nc.Close()
-	m.js, err = initJetStream(cfg.Nats, m.nc)
-	if err != nil {
-		return err
-	}
-	m.logger = initLogger(cfg)
-	m.rpc = initRpc(cfg.Rpc)
-	m.mux = initMux(cfg.Web)
-	m.waiter = waiter.New(waiter.CatchSignals())
-
-	// init modules
-	m.modules = []monolith.Module{
-		&gates.Module{},
-		&ntps.Module{},
-		&notifications.Module{},
-	}
-
-	if err = m.startupModules(); err != nil {
-		return err
-	}
-
-	// Mount general web resources
-	m.mux.Mount("/", http.FileServer(http.FS(web.WebUI)))
-
-	fmt.Println("started mallbots application")
-	defer fmt.Println("stopped mallbots application")
 
 	m.waiter.Add(
 		m.waitForWeb,

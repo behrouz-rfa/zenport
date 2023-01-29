@@ -29,6 +29,7 @@ func (m Module) Startup(ctx context.Context, mono monolith.Monolith) (err error)
 	return Root(ctx, mono)
 }
 func Root(ctx context.Context, mono system.Service) (err error) {
+	// setup Driven adapters
 	reg := registry.New()
 	if err = registrations(reg); err != nil {
 		return err
@@ -36,7 +37,6 @@ func Root(ctx context.Context, mono system.Service) (err error) {
 	if err = ntpspb.Registrations(reg); err != nil {
 		return
 	}
-	//work with nats or rabbitq
 	var eventStream am.EventStream
 	if mono.Config().RABBITMQC.IsEnable {
 		eventStream = am.NewEventStream(reg, rbqm.NewStream(mono.RBSession()))
@@ -74,10 +74,13 @@ func Root(ctx context.Context, mono system.Service) (err error) {
 	}
 	return nil
 }
+
+// for decoding and encoding event for
+// sending message to message brokers
 func registrations(reg registry.Registry) (err error) {
 	serde := serdes.NewJsonSerde(reg)
 
-	// Store
+	// Time
 	if err = serde.Register(domain.Time{}, func(v any) error {
 		store := v.(*domain.Time)
 		store.Aggregate = es.NewAggregate("", domain.NtpAggregate)
@@ -85,7 +88,8 @@ func registrations(reg registry.Registry) (err error) {
 	}); err != nil {
 		return
 	}
-	// store events
+
+	// Time events
 	if err = serde.Register(domain.TimeCreated{}); err != nil {
 		return
 	}

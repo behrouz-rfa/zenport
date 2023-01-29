@@ -19,19 +19,20 @@ import (
 	"zenport/internal/waiter"
 )
 
+// all configuration comse her
 type app struct {
-	cfg        config.AppConfig
-	db         *sql.DB
-	nc         *nats.Conn
-	js         nats.JetStreamContext
-	ch         *amqp.Channel
-	qm         *amqp.Connection
-	logger     zerolog.Logger
-	modules    []monolith.Module
-	mux        *chi.Mux
-	rb_session chan chan rb.Session
-	rpc        *grpc.Server
-	waiter     waiter.Waiter
+	cfg        config.AppConfig      //config from .env
+	db         *sql.DB               // db connection
+	nc         *nats.Conn            // nats connection
+	js         nats.JetStreamContext // jet stream connection
+	ch         *amqp.Channel         // rabbitqm chanall
+	qm         *amqp.Connection      // rabbitqm connection
+	logger     zerolog.Logger        // logger
+	modules    []monolith.Module     // all module append to this (gates,ntps,notification)
+	mux        *chi.Mux              // i love chi :)
+	rb_session chan chan rb.Session  // rabbitqm session
+	rpc        *grpc.Server          // rpc server
+	waiter     waiter.Waiter         // waiter
 }
 
 func (a *app) Config() config.AppConfig {

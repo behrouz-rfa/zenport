@@ -28,10 +28,12 @@ func NewApplication(time domain.TimeRepository, ntps domain.NtpRepository) *Appl
 
 func (a Application) GetTime(ctx context.Context, r TimeRequest) (*domain.Time, error) {
 
+	// start to call time from ntps service
 	t, err := a.ntp.FetchTime(ctx, r.Ask)
 	if err != nil {
 		return nil, err
 	}
 
+	//return time to user
 	return domain.NewTime(t), nil
 }
