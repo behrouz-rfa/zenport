@@ -4,6 +4,7 @@ services:
   monolith:
     container_name: monolith
     hostname: monolith
+    restart: always
     build:
       context: .
       dockerfile: docker/Dockerfile
@@ -14,6 +15,7 @@ services:
       - docker/.env
     depends_on:
       - nats
+      - rabbit1
       - postgres
     command: [ "./wait-for", "postgres:5432", "--", "/zenports/monolith" ]
   postgres:
@@ -41,19 +43,19 @@ services:
     volumes:
       - 'jsdata:/var/lib/nats/data'
 
-#  rabbit1:
-#    image: "rabbitmq:3-management"
-#    hostname: "rabbit1"
-#    environment:
-#      RABBITMQ_DEFAULT_USER: "rabbitmq"
-#      RABBITMQ_DEFAULT_PASS: "rabbitmq"
-#    ports:
-#      - "5672:5672"
-#      - "15672:15672"
-  #
-  # docker compose --profile microservices up
-  #
-  
+  rabbit1:
+    image: "rabbitmq:3-management"
+    hostname: "rabbit1"
+    environment:
+      RABBITMQ_DEFAULT_USER: "rabbitmq"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: always
+
+  #   docker compose --profile microservices up
+
   notifications:
     container_name: notifications
     hostname: notifications

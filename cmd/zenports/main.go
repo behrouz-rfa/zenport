@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"github.com/go-chi/chi/v5"
@@ -15,6 +16,7 @@ import (
 	"zenport/internal/config"
 	"zenport/internal/logger"
 	"zenport/internal/monolith"
+	"zenport/internal/rb"
 	"zenport/internal/rpc"
 	"zenport/internal/waiter"
 	"zenport/internal/web"
@@ -29,7 +31,7 @@ func main() {
 	}
 }
 
-func run2() (err error) {
+func run() (err error) {
 	var cfg config.AppConfig
 	// parse config/env/...
 	cfg, err = config.InitConfig()
@@ -78,8 +80,8 @@ func run2() (err error) {
 	//m.qm = conn
 	//m.ch = ch
 	//
-	////set session for connecting to rabbitqm
-	//m.rb_session = rb.Redial(context.Background(), cfg.RB.URL, cfg.RB.Exchange)
+	//set session for connecting to rabbitqm
+	m.rb_session = rb.Redial(context.Background(), cfg.RB.URL, cfg.RB.Exchange)
 
 	m.logger = initLogger(cfg)
 	m.rpc = initRpc(cfg.Rpc)
@@ -112,7 +114,7 @@ func run2() (err error) {
 
 	return m.waiter.Wait()
 }
-func run() (err error) {
+func run3() (err error) {
 	var cfg config.AppConfig
 	// parse config/env/...
 	cfg, err = config.InitConfig()

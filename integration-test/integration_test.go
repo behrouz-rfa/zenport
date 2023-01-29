@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	requestURL = "http://localhost:8081/api/times"
+	requestURL = "http://localhost:8080/api/times"
 )
 
 var headerContentTypeJson = []byte("application/json")

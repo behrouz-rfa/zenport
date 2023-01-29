@@ -7,6 +7,7 @@ import (
 	"zenport/internal/es"
 	"zenport/internal/jetstream"
 	pg "zenport/internal/postgres"
+	"zenport/internal/rbqm"
 	"zenport/internal/registry"
 	"zenport/internal/registry/serdes"
 	"zenport/internal/system"
@@ -35,8 +36,13 @@ func Root(ctx context.Context, mono system.Service) (err error) {
 	if err = ntpspb.Registrations(reg); err != nil {
 		return
 	}
-	eventStream := am.NewEventStream(reg, jetstream.NewStream(mono.Config().Nats.Stream, mono.JS()))
-	//eventStream := am.NewEventStream(reg, rbqm.NewStream(mono.RBSession()))
+	//work with nats or rabbitq
+	var eventStream am.EventStream
+	if mono.Config().RABBITMQC.IsEnable {
+		eventStream = am.NewEventStream(reg, rbqm.NewStream(mono.RBSession()))
+	} else {
+		eventStream = am.NewEventStream(reg, jetstream.NewStream(mono.Config().Nats.Stream, mono.JS()))
+	}
 	domainDispatcher := ddd.NewEventDispatcher[ddd.AggregateEvent]()
 	aggregateNtp := es.AggregateNtpWithMiddleware(
 		pg.NewEventStore("ntps.events", mono.DB(), reg),

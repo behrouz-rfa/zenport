@@ -13,7 +13,7 @@ type NtpCacheRepository struct {
 }
 
 func (n NtpCacheRepository) ShowRequest(ctx context.Context, id, time string) error {
-	fmt.Println("Event Added to cache")
+	fmt.Println("Event Added to cache", id, time)
 	return nil
 }
 

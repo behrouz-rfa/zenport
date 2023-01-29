@@ -5,6 +5,7 @@ import (
 	"zenport/internal/am"
 	"zenport/internal/ddd"
 	"zenport/internal/jetstream"
+	"zenport/internal/rbqm"
 	"zenport/internal/registry"
 	"zenport/internal/system"
 	"zenport/notifications/internal/postgres"
@@ -30,11 +31,15 @@ func Root(ctx context.Context, mono system.Service) (err error) {
 	if err := ntpspb.Registrations(reg); err != nil {
 		return err
 	}
-	eventStream := am.NewEventStream(reg, jetstream.NewStream(mono.Config().Nats.Stream, mono.JS()))
-	//eventStream := am.NewEventStream(reg, rbqm.NewStream(mono.RBSession()))
-
+	//work with nats or rabbitq
+	var eventStream am.EventStream
+	if mono.Config().RABBITMQC.IsEnable {
+		eventStream = am.NewEventStream(reg, rbqm.NewStream(mono.RBSession()))
+	} else {
+		eventStream = am.NewEventStream(reg, jetstream.NewStream(mono.Config().Nats.Stream, mono.JS()))
+	}
 	// setup application
-	customers := postgres.NewNtpCacheRepository("notifications.customers_cache", mono.DB())
+	customers := postgres.NewNtpCacheRepository("notifications.ntp_cache", mono.DB())
 	var app application.App
 	app = application.New(customers)
 	app = logging.LogApplicationAccess(app, mono.Logger())
