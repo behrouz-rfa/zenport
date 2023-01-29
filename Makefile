@@ -15,6 +15,15 @@ generate:
 	@go generate ./...
 	@echo done
 
+
+run:
+	echo "Starting docker environment"
+	docker compose  up --build
+
+microservice:
+	echo "Starting local environment"
+	 docker compose --profile microservices up --build
+
 build: build-monolith build-services
 
 rebuild: clean-monolith clean-services build

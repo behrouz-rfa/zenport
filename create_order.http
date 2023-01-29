@@ -1,4 +1,4 @@
-### Create Store
+### Ask tile
 POST http://localhost:8080/api/times
 Content-Type: application/json
 Accept: application/json
