@@ -7,14 +7,14 @@ import (
 )
 
 type NtpHandlers[T ddd.AggregateEvent] struct {
-	mall domain.NtpRepository
+	ntp domain.NtpRepository
 }
 
 var _ ddd.EventHandler[ddd.AggregateEvent] = (*NtpHandlers[ddd.AggregateEvent])(nil)
 
-func NewMallHandlers(mall domain.NtpRepository) *NtpHandlers[ddd.AggregateEvent] {
+func NewMallHandlers(ntp domain.NtpRepository) *NtpHandlers[ddd.AggregateEvent] {
 	return &NtpHandlers[ddd.AggregateEvent]{
-		mall: mall,
+		ntp: ntp,
 	}
 }
 func (h NtpHandlers[T]) HandleEvent(ctx context.Context, event T) error {
@@ -27,5 +27,5 @@ func (h NtpHandlers[T]) HandleEvent(ctx context.Context, event T) error {
 
 func (h NtpHandlers[T]) onTimeCreated(ctx context.Context, event ddd.AggregateEvent) error {
 	payload := event.Payload().(*domain.TimeCreated)
-	return h.mall.AddTime(ctx, event.AggregateID(), payload.Time)
+	return h.ntp.AddTime(ctx, event.AggregateID(), payload.Time)
 }

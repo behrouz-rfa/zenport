@@ -56,7 +56,7 @@ func run() (err error) {
 	// init nats & jetstream
 	m.nc, err = nats.Connect(cfg.Nats.URL)
 	if err != nil {
-		panic(err)
+
 		return err
 	}
 	defer m.nc.Close()

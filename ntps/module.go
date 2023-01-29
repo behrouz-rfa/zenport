@@ -53,7 +53,7 @@ func Root(ctx context.Context, mono system.Service) (err error) {
 
 	// setup application
 	app := logging.LogApplicationAccess(
-		application.New(ntps, ntp),
+		application.New(ntps),
 		mono.Logger(),
 	)
 	mallHandlers := logging.LogEventHandlerAccess[ddd.AggregateEvent](
