@@ -19,14 +19,14 @@ func (m Module) Startup(ctx context.Context, mono monolith.Monolith) error {
 
 func Root(ctx context.Context, mono system.Service) (err error) {
 	//
-	customers := postgres.NewTimeRepository("ntps.time", mono.DB())
+	timeRepo := postgres.NewTimeRepository("ntps.time", mono.DB())
 	conn, err := grpc.Dial(ctx, mono.Config().Rpc.Address())
 	if err != nil {
 		return err
 	}
 	ntps := grpc.NewNtpRepository(conn)
 	var app application.App
-	app = application.NewApplication(customers, ntps)
+	app = application.NewApplication(timeRepo, ntps)
 	app = logging.LogApplicationAccess(app, mono.Logger())
 
 	if err := grpc.RegisterServer(app, mono.RPC()); err != nil {

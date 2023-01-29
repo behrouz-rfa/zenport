@@ -45,8 +45,8 @@ func run() (err error) {
 	if err = gates.Root(s.Waiter().Context(), s); err != nil {
 		return err
 	}
-	fmt.Println("started stores service")
-	defer fmt.Println("stopped stores service")
+	fmt.Println("started gates service")
+	defer fmt.Println("stopped gates service")
 
 	s.Waiter().Add(
 		s.WaitForWeb,

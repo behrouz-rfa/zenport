@@ -28,7 +28,7 @@ services:
     ports:
       - '5434:5432'
     volumes:
-      - db:/var/lib/postgresql/data
+      - db2:/var/lib/postgresql/data1
       - ./docker/database:/docker-entrypoint-initdb.d
   nats:
     container_name: nats
@@ -151,5 +151,5 @@ services:
       - monolith
 
 volumes:
-  db:
+  db2:
   jsdata:

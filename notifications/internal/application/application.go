@@ -5,39 +5,29 @@ import (
 )
 
 type (
-	OrderCreated struct {
-		OrderID    string
-		CustomerID string
-	}
-
-	OrderCanceled struct {
-		OrderID    string
-		CustomerID string
-	}
-
-	OrderReady struct {
-		OrderID    string
-		CustomerID string
+	TimeCreated struct {
+		Id   string
+		Time string
 	}
 
 	App interface {
-		NotifyTimeCreated(ctx context.Context, notify OrderCreated) error
+		NotifyTimeCreated(ctx context.Context, notify TimeCreated) error
 	}
 
 	Application struct {
-		customers NtpCacheRepository
+		ntps NtpCacheRepository
 	}
 )
 
-func (a Application) NotifyTimeCreated(ctx context.Context, notify OrderCreated) error {
+func (a Application) NotifyTimeCreated(ctx context.Context, notify TimeCreated) error {
 
 	return nil
 }
 
 var _ App = (*Application)(nil)
 
-func New(customers NtpCacheRepository) *Application {
+func New(nptCachRepo NtpCacheRepository) *Application {
 	return &Application{
-		customers: customers,
+		ntps: nptCachRepo,
 	}
 }

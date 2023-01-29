@@ -7,9 +7,9 @@ import (
 	"zenport/ntps/ntpspb"
 )
 
-func RegisterNtpHandlers(customerHandlers ddd.EventHandler[ddd.Event], stream am.EventSubscriber) error {
+func RegisterNtpHandlers(ntpHandlers ddd.EventHandler[ddd.Event], stream am.EventSubscriber) error {
 	evtMsgHandler := am.MessageHandlerFunc[am.EventMessage](func(ctx context.Context, eventMsg am.EventMessage) error {
-		return customerHandlers.HandleEvent(ctx, eventMsg)
+		return ntpHandlers.HandleEvent(ctx, eventMsg)
 	})
 
 	return stream.Subscribe(ntpspb.NtpsAggregateChannel, evtMsgHandler, am.MessageFilter{

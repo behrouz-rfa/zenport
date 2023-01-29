@@ -39,18 +39,18 @@ func Root(ctx context.Context, mono system.Service) (err error) {
 		eventStream = am.NewEventStream(reg, jetstream.NewStream(mono.Config().Nats.Stream, mono.JS()))
 	}
 	// setup application
-	customers := postgres.NewNtpCacheRepository("notifications.ntp_cache", mono.DB())
+	ntpCacheRepo := postgres.NewNtpCacheRepository("notifications.ntp_cache", mono.DB())
 	var app application.App
-	app = application.New(customers)
+	app = application.New(ntpCacheRepo)
 	app = logging.LogApplicationAccess(app, mono.Logger())
 
-	customerHandlers := logging.LogEventHandlerAccess[ddd.Event](
-		application.NewCustomerHandlers(customers),
-		"Customer", mono.Logger(),
+	ntpHandlers := logging.LogEventHandlerAccess[ddd.Event](
+		application.NewNtpHandlers(ntpCacheRepo),
+		"Notification", mono.Logger(),
 	)
 
 	// setup Driver adapters
-	if err := handlers.RegisterNtpHandlers(customerHandlers, eventStream); err != nil {
+	if err := handlers.RegisterNtpHandlers(ntpHandlers, eventStream); err != nil {
 		return err
 	}
 

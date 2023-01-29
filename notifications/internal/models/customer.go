@@ -1,7 +1,6 @@
 package models
 
-type Customer struct {
-	ID        string
-	Name      string
-	SmsNumber string
+type Notification struct {
+	ID   string
+	Name string
 }

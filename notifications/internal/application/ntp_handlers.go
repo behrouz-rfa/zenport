@@ -6,28 +6,28 @@ import (
 	"zenport/ntps/ntpspb"
 )
 
-type CustomerHandlers[T ddd.Event] struct {
+type NtpHandlers[T ddd.Event] struct {
 	cache NtpCacheRepository
 }
 
-var _ ddd.EventHandler[ddd.Event] = (*CustomerHandlers[ddd.Event])(nil)
+var _ ddd.EventHandler[ddd.Event] = (*NtpHandlers[ddd.Event])(nil)
 
-func NewCustomerHandlers(cache NtpCacheRepository) CustomerHandlers[ddd.Event] {
-	return CustomerHandlers[ddd.Event]{
+func NewNtpHandlers(cache NtpCacheRepository) NtpHandlers[ddd.Event] {
+	return NtpHandlers[ddd.Event]{
 		cache: cache,
 	}
 }
 
-func (h CustomerHandlers[T]) HandleEvent(ctx context.Context, event T) error {
+func (h NtpHandlers[T]) HandleEvent(ctx context.Context, event T) error {
 	switch event.EventName() {
 	case ntpspb.TimeCreatedEvent:
-		return h.onCustomerRegistered(ctx, event)
+		return h.onTimeCreated(ctx, event)
 	}
 
 	return nil
 }
 
-func (h CustomerHandlers[T]) onCustomerRegistered(ctx context.Context, event T) error {
+func (h NtpHandlers[T]) onTimeCreated(ctx context.Context, event T) error {
 	payload := event.Payload().(*ntpspb.TimeCreated)
 	return h.cache.ShowRequest(ctx, payload.GetId(), payload.GetTime())
 }
