@@ -1,0 +1,10 @@
+### Create Store
+POST http://localhost:8081/api/times
+Content-Type: application/json
+Accept: application/json
+
+{
+  "ask": "What time is it?"
+}
+
+> {% client.global.set("time", response.body.time); %}

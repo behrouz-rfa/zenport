@@ -1,0 +1,147 @@
+version: "3.8"
+
+services:
+  monolith:
+    container_name: monolith
+    hostname: monolith
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - '8080:8080'
+      - '8085:8085'
+    env_file:
+      - docker/.env
+    depends_on:
+      - nats
+      - postgres
+    command: [ "./wait-for", "postgres:5432", "--", "/zenports/monolith" ]
+  postgres:
+    container_name: postgres
+    hostname: postgres
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: itsasecret
+    ports:
+      - '5434:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+      - ./docker/database:/docker-entrypoint-initdb.d
+  nats:
+    container_name: nats
+    hostname: nats
+    image: nats:2-alpine
+    ports:
+      - '4222:4222'
+    command:
+      - -js
+      - -sd
+      - /var/lib/nats/data
+    volumes:
+      - 'jsdata:/var/lib/nats/data'
+
+#  rabbit1:
+#    image: "rabbitmq:3-management"
+#    hostname: "rabbit1"
+#    environment:
+#      RABBITMQ_DEFAULT_USER: "rabbitmq"
+#      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+#    ports:
+#      - "5672:5672"
+#      - "15672:15672"
+  #
+  # docker compose --profile microservices up
+  #
+  
+  notifications:
+    container_name: notifications
+    hostname: notifications
+    image: zenports-notifications
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.microservices
+      args:
+        service: notifications
+    expose:
+      - '9000'
+    environment:
+      ENVIRONMENT: development
+      PG_CONN: host=postgres dbname=notifications user=notifications_user password=notifications_pass search_path=notifications,public
+      NATS_URL: nats:4222
+    depends_on:
+      - nats
+      - postgres
+#      - rabbit1
+    command: [ "./wait-for", "postgres:5432", "--", "/zenports/service" ]
+    profiles:
+      - microservices
+  gates:
+    container_name: gates
+    hostname: gates
+    image: zenports-gates
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.microservices
+      args:
+        service: gates
+    expose:
+      - '9000'
+    environment:
+      ENVIRONMENT: development
+      RPC_SERVICES: 'GATES=gates:9000,NTPS=ntps:9000'
+      PG_CONN: host=postgres dbname=gates user=gates_user password=gates_pass search_path=gates,public
+      NATS_URL: nats:4222
+    depends_on:
+      - nats
+      - postgres
+#      - rabbit1
+    command: [ "./wait-for", "postgres:5432", "--", "/zenports/service" ]
+    profiles:
+      - microservices
+  ntps:
+    container_name: ntps
+    hostname: ntps
+    image: zenports-ntps
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.microservices
+      args:
+        service: ntps
+    expose:
+      - '9000'
+    environment:
+      ENVIRONMENT: development
+      RPC_SERVICES: 'NTPS=ntps:9000,GATES=gates:9000'
+      PG_CONN: host=postgres dbname=ntps user=ntps_user password=ntps_pass search_path=ntps,public
+      NATS_URL: nats:4222
+    depends_on:
+      - nats
+      - postgres
+#      - rabbit1
+    command: [ "./wait-for", "postgres:5432", "--", "/zenports/service" ]
+    profiles:
+      - microservices
+
+  reverse-proxy:
+    container_name: proxy
+    hostname: proxy
+    image: nginx:alpine
+    ports:
+      - '8080:8080'
+    volumes:
+      - './docker/nginx.conf:/etc/nginx/nginx.conf'
+    profiles:
+      - microservices
+#  integration:
+#    build:
+#      context: .
+#      dockerfile: integration-test/Dockerfile
+#    container_name: integration
+#    image: integration
+#    depends_on:
+#      - monolith
+
+volumes:
+  db:
+  jsdata:
