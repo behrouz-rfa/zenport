@@ -1,12 +1,10 @@
 package rbqm
 
 import (
-	"bufio"
 	"context"
 	"crypto/sha1"
 	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
-	"io"
 	"log"
 	"os"
 	"time"
@@ -175,48 +173,6 @@ func (s session) Close() error {
 	return s.Connection.Close()
 }
 
-// redial continually connects to the URL, exiting the program when no longer possible
-func redial(ctx context.Context, url string) chan chan session {
-	sessions := make(chan chan session)
-
-	go func() {
-		sess := make(chan session)
-		defer close(sessions)
-
-		for {
-			select {
-			case sessions <- sess:
-			case <-ctx.Done():
-				log.Println("shutting down session factory")
-				return
-			}
-
-			conn, err := amqp.Dial(url)
-			if err != nil {
-				log.Fatalf("cannot (re)dial: %v: %q", err, url)
-			}
-
-			ch, err := conn.Channel()
-			if err != nil {
-				log.Fatalf("cannot create channel: %v", err)
-			}
-
-			if err := ch.ExchangeDeclare(exchange, "fanout", false, true, false, false, nil); err != nil {
-				log.Fatalf("cannot declare fanout exchange: %v", err)
-			}
-
-			select {
-			case sess <- session{conn, ch}:
-			case <-ctx.Done():
-				log.Println("shutting down new session")
-				return
-			}
-		}
-	}()
-
-	return sessions
-}
-
 // publish publishes messages to a reconnecting session to a fanout exchange.
 // It receives from the application specific source of messages.
 func publish(sessions chan chan rb.Session, messages <-chan message) {
@@ -312,30 +268,4 @@ func subscribe(sessions chan chan rb.Session, messages chan<- message) {
 			sub.Ack(msg.DeliveryTag, false)
 		}
 	}
-}
-
-// read is this application's translation to the message format, scanning from
-// stdin.
-func read(r io.Reader) <-chan message {
-	lines := make(chan message)
-	go func() {
-		defer close(lines)
-		scan := bufio.NewScanner(r)
-		for scan.Scan() {
-			lines <- scan.Bytes()
-		}
-	}()
-	return lines
-}
-
-// write is this application's subscriber of application messages, printing to
-// stdout.
-func write(w io.Writer) chan<- message {
-	lines := make(chan message)
-	go func() {
-		for line := range lines {
-			fmt.Fprintln(w, string(line))
-		}
-	}()
-	return lines
 }
