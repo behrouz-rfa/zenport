@@ -17,7 +17,7 @@ func LogApplicationAccess(app application.App, logger zerolog.Logger) Applicatio
 }
 
 func (a Application) GetTime(ctx context.Context, request application.TimeRequest) (t *domain.Time, err error) {
-	a.logger.Info().Msg("--> Times.GetTime")
-	defer func() { a.logger.Info().Err(err).Msg("<-- Times.GetTime") }()
+	a.logger.Info().Msg("--> Gates.GetTime")
+	defer func() { a.logger.Info().Err(err).Msg("<-- Gates.GetTime") }()
 	return a.App.GetTime(ctx, request)
 }
