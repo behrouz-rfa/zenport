@@ -65,22 +65,7 @@ func run() (err error) {
 		return err
 	}
 
-	////init rabitqm
-	//conn, err := amqp.Dial(cfg.RB.URL)
-	//if err != nil {
-	//	return err
-	//}
-	//ch, err := conn.Channel()
-	//if err != nil {
-	//	return err
-	//}
-	//if err := ch.ExchangeDeclare(cfg.RB.Exchange, "fanout", false, true, false, false, nil); err != nil {
-	//	return err
-	//}
-	//m.qm = conn
-	//m.ch = ch
-	//
-	//set session for connecting to rabbitqm
+	//init rabbitqm session
 	m.rb_session = rb.Redial(context.Background(), cfg.RB.URL, cfg.RB.Exchange)
 
 	m.logger = initLogger(cfg)
