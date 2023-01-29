@@ -5,7 +5,7 @@
 #### 🙌👨‍💻🚀 Docker-compose files easy lunch:
 
     docker-compose.yml
-    sudo docker compose up 
+    sudo docker compose up --build
 
 ```
 curl -X 'POST' \
