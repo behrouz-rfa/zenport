@@ -22,11 +22,14 @@ var _ interface {
 	es.EventApplier
 } = (*Time)(nil)
 
+// setup aggrgation for this approch
 func NewNtp(id string) *Time {
 	return &Time{
 		Aggregate: es.NewAggregate(id, NtpAggregate),
 	}
 }
+
+// Ceate a time and check the currect input
 func CreateTime(id string, input string) (*Time, error) {
 	if input != "What time is it?" {
 		return nil, ErrStoreNameIsBlank
@@ -46,7 +49,6 @@ func (s *Time) ApplyEvent(event ddd.Event) error {
 	switch payload := event.Payload().(type) {
 	case *TimeCreated:
 		s.Time = payload.Time
-
 	default:
 		return errors.ErrInternal.Msgf("%T received the event %s with unexpected payload %T", s, event.EventName(), payload)
 	}
