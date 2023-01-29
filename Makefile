@@ -24,22 +24,26 @@ microservice:
 	echo "Starting local environment"
 	 docker compose --profile microservices up --build
 
-build: build-monolith build-services
+integration-test:
+	go test gates/internal/grpc/*
+	go test ntps/internal/grpc/*
 
-rebuild: clean-monolith clean-services build
-
-clean-monolith:
-	docker image rm zenports-monolith
-
-clean-services:
-	docker image rm zenports-gates zenports-ntps zenports-notifications
-
-build-monolith:
-	docker build -t zenports-monolith --file docker/Dockerfile .
-
-build-services:
-	docker build -t zenports-gates --file docker/Dockerfile.microservices --build-arg=service=gates .
-	docker build -t zenports-ntps --file docker/Dockerfile.microservices --build-arg=service=ntps .
-	docker build -t zenports-notifications --file docker/Dockerfile.microservices --build-arg=service=notifications .
-
-
+#build: build-monolith build-services
+#
+#rebuild: clean-monolith clean-services build
+#
+#clean-monolith:
+#	docker image rm zenports-monolith
+#
+#clean-services:
+#	docker image rm zenports-gates zenports-ntps zenports-notifications
+#
+#build-monolith:
+#	docker build -t zenports-monolith --file docker/Dockerfile .
+#
+#build-services:
+#	docker build -t zenports-gates --file docker/Dockerfile.microservices --build-arg=service=gates .
+#	docker build -t zenports-ntps --file docker/Dockerfile.microservices --build-arg=service=ntps .
+#	docker build -t zenports-notifications --file docker/Dockerfile.microservices --build-arg=service=notifications .
+#
+#

@@ -4,7 +4,6 @@ import (
 	"context"
 	"zenport/ntps/internal/application/commands"
 	"zenport/ntps/internal/domain"
-	"zenport/ntps/internal/postgres"
 )
 
 type (
@@ -26,7 +25,7 @@ type (
 
 var _ App = (*Application)(nil)
 
-func New(times domain.TimeRepository, ntp postgres.NtpRepository) *Application {
+func New(times domain.TimeRepository) *Application {
 	return &Application{
 		appCommands: appCommands{
 			CreateTimeHandler: commands.NewCreateTimeHandler(times),

@@ -12,6 +12,7 @@
 
     make run   // run the application
     make race // run the application with  race flag
+    make integration-test // run integration test
 
 #### 🙌👨‍💻🚀 Docker-compose files:
 

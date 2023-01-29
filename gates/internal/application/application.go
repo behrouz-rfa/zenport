@@ -15,15 +15,15 @@ type (
 	}
 
 	Application struct {
-		customers domain.TimeRepository
-		ntp       domain.NtpRepository
+		time domain.TimeRepository
+		ntp  domain.NtpRepository
 	}
 )
 
 var _ App = (*Application)(nil)
 
-func NewApplication(customers domain.TimeRepository, ntps domain.NtpRepository) *Application {
-	return &Application{customers: customers, ntp: ntps}
+func NewApplication(time domain.TimeRepository, ntps domain.NtpRepository) *Application {
+	return &Application{time: time, ntp: ntps}
 }
 
 func (a Application) GetTime(ctx context.Context, r TimeRequest) (*domain.Time, error) {
