@@ -1,4 +1,4 @@
-package service
+package main
 
 import (
 	"database/sql"
@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 	"zenport/gates"
-	"zenport/gates/migrations"
 	"zenport/internal/config"
 	"zenport/internal/system"
 	"zenport/internal/web"
@@ -37,9 +36,9 @@ func run() (err error) {
 		}
 	}(s.DB())
 
-	if err = s.MigrateDB(migrations.FS); err != nil {
-		return err
-	}
+	//if err = s.MigrateDB(migrations.FS); err != nil {
+	//	return err
+	//}
 	s.Mux().Mount("/", http.FileServer(http.FS(web.WebUI)))
 	// call the module composition root
 	if err = gates.Root(s.Waiter().Context(), s); err != nil {

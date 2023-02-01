@@ -18,6 +18,7 @@ services:
       - rabbit1
       - postgres
     command: [ "./wait-for", "postgres:5432", "--", "/zenports/monolith" ]
+    profiles: [ monolith ]
   postgres:
     container_name: postgres
     hostname: postgres
@@ -78,11 +79,12 @@ services:
       - postgres
       - rabbit1
     command: [ "./wait-for", "postgres:5432", "--", "/zenports/service" ]
-    profiles:
-      - microservices
+    profiles: [ microservices ]
+
   gates:
     container_name: gates
     hostname: gates
+    restart: always
     image: zenports-gates
     build:
       context: .
@@ -97,11 +99,12 @@ services:
       PG_CONN: host=postgres dbname=gates user=gates_user password=gates_pass search_path=gates,public
       NATS_URL: nats:4222
       RB_URL: amqp://rabbitmq:rabbitmq@rabbit1:5672/
-      RABBITMQC_ISENABLE : true
+      RABBITMQC_ISENABLE: true
     depends_on:
       - nats
       - postgres
-#      - rabbit1
+    #      - ntps
+    #      - rabbit1
     command: [ "./wait-for", "postgres:5432", "--", "/zenports/service" ]
     profiles:
       - microservices
@@ -109,6 +112,7 @@ services:
     container_name: ntps
     hostname: ntps
     image: zenports-ntps
+    restart: always
     build:
       context: .
       dockerfile: docker/Dockerfile.microservices

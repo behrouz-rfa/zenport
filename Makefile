@@ -45,5 +45,3 @@ integration-test:
 #	docker build -t zenports-gates --file docker/Dockerfile.microservices --build-arg=service=gates .
 #	docker build -t zenports-ntps --file docker/Dockerfile.microservices --build-arg=service=ntps .
 #	docker build -t zenports-notifications --file docker/Dockerfile.microservices --build-arg=service=notifications .
-#
-#

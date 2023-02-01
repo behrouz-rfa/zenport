@@ -3,11 +3,9 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"net/http"
 	"os"
 	"zenport/internal/config"
 	"zenport/internal/system"
-	"zenport/internal/web"
 	"zenport/ntps"
 	"zenport/ntps/migrations"
 
@@ -40,7 +38,7 @@ func run() (err error) {
 	if err = s.MigrateDB(migrations.FS); err != nil {
 		return err
 	}
-	s.Mux().Mount("/", http.FileServer(http.FS(web.WebUI)))
+	//s.Mux().Mount("/", http.FileServer(http.FS(web.WebUI)))
 	// call the module composition root
 	if err = ntps.Root(s.Waiter().Context(), s); err != nil {
 		return err
@@ -49,7 +47,7 @@ func run() (err error) {
 	defer fmt.Println("stopped stores service")
 
 	s.Waiter().Add(
-		s.WaitForWeb,
+		//s.WaitForWeb,
 		s.WaitForRPC,
 		s.WaitForStream,
 	)
