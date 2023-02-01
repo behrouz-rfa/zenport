@@ -57,81 +57,81 @@ services:
 
   #   docker compose --profile microservices up
 
-  notifications:
-    container_name: notifications
-    hostname: notifications
-    image: zenports-notifications
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.microservices
-      args:
-        service: notifications
-    expose:
-      - '9000'
-    environment:
-      ENVIRONMENT: development
-      PG_CONN: host=postgres dbname=notifications user=notifications_user password=notifications_pass search_path=notifications,public
-      NATS_URL: nats:4222
-      RB_URL: amqp://rabbitmq:rabbitmq@rabbit1:5672/
-      RABBITMQC_ISENABLE: true
-    depends_on:
-      - nats
-      - postgres
-      - rabbit1
-    command: [ "./wait-for", "postgres:5432", "--", "/zenports/service" ]
-    profiles: [ microservices ]
-
-  gates:
-    container_name: gates
-    hostname: gates
-    image: zenports-gates
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.microservices
-      args:
-        service: gates
-    expose:
-      - '9000'
-    environment:
-      ENVIRONMENT: development
-      RPC_SERVICES: 'GATES=gates:9000,NTPS=ntps:9000'
-      PG_CONN: host=postgres dbname=gates user=gates_user password=gates_pass search_path=gates,public
-      NATS_URL: nats:4222
-      RB_URL: amqp://rabbitmq:rabbitmq@rabbit1:5672/
-      RABBITMQC_ISENABLE: true
-    depends_on:
-      - nats
-      - postgres
-    #      - ntps
-    #      - rabbit1
-    command: [ "./wait-for", "postgres:5432", "--", "/zenports/service" ]
-    profiles:
-      - microservices
-  ntps:
-    container_name: ntps
-    hostname: ntps
-    image: zenports-ntps
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.microservices
-      args:
-        service: ntps
-    expose:
-      - '9000'
-    environment:
-      ENVIRONMENT: development
-      RPC_SERVICES: 'NTPS=ntps:9000,GATES=gates:9000'
-      PG_CONN: host=postgres dbname=ntps user=ntps_user password=ntps_pass search_path=ntps,public
-      NATS_URL: nats:4222
-      RB_URL: amqp://rabbitmq:rabbitmq@rabbit1:5672/
-      RABBITMQC_ISENABLE: true
-    depends_on:
-      - nats
-      - postgres
-      - rabbit1
-    command: [ "./wait-for", "postgres:5432", "--", "/zenports/service" ]
-    profiles:
-      - microservices
+#  notifications:
+#    container_name: notifications
+#    hostname: notifications
+#    image: zenports-notifications
+#    build:
+#      context: .
+#      dockerfile: docker/Dockerfile.microservices
+#      args:
+#        service: notifications
+#    expose:
+#      - '9000'
+#    environment:
+#      ENVIRONMENT: development
+#      PG_CONN: host=postgres dbname=notifications user=notifications_user password=notifications_pass search_path=notifications,public
+#      NATS_URL: nats:4222
+#      RB_URL: amqp://rabbitmq:rabbitmq@rabbit1:5672/
+#      RABBITMQC_ISENABLE: true
+#    depends_on:
+#      - nats
+#      - postgres
+#      - rabbit1
+#    command: [ "./wait-for", "postgres:5432", "--", "/zenports/service" ]
+#    profiles: [ microservices ]
+#
+#  gates:
+#    container_name: gates
+#    hostname: gates
+#    image: zenports-gates
+#    build:
+#      context: .
+#      dockerfile: docker/Dockerfile.microservices
+#      args:
+#        service: gates
+#    expose:
+#      - '9000'
+#    environment:
+#      ENVIRONMENT: development
+#      RPC_SERVICES: 'GATES=gates:9000,NTPS=ntps:9000'
+#      PG_CONN: host=postgres dbname=gates user=gates_user password=gates_pass search_path=gates,public
+#      NATS_URL: nats:4222
+#      RB_URL: amqp://rabbitmq:rabbitmq@rabbit1:5672/
+#      RABBITMQC_ISENABLE: true
+#    depends_on:
+#      - nats
+#      - postgres
+#    #      - ntps
+#    #      - rabbit1
+#    command: [ "./wait-for", "postgres:5432", "--", "/zenports/service" ]
+#    profiles:
+#      - microservices
+#  ntps:
+#    container_name: ntps
+#    hostname: ntps
+#    image: zenports-ntps
+#    build:
+#      context: .
+#      dockerfile: docker/Dockerfile.microservices
+#      args:
+#        service: ntps
+#    expose:
+#      - '9000'
+#    environment:
+#      ENVIRONMENT: development
+#      RPC_SERVICES: 'NTPS=ntps:9000,GATES=gates:9000'
+#      PG_CONN: host=postgres dbname=ntps user=ntps_user password=ntps_pass search_path=ntps,public
+#      NATS_URL: nats:4222
+#      RB_URL: amqp://rabbitmq:rabbitmq@rabbit1:5672/
+#      RABBITMQC_ISENABLE: true
+#    depends_on:
+#      - nats
+#      - postgres
+#      - rabbit1
+#    command: [ "./wait-for", "postgres:5432", "--", "/zenports/service" ]
+#    profiles:
+#      - microservices
 
   reverse-proxy:
     container_name: proxy

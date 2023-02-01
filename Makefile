@@ -38,9 +38,9 @@ integration-test:
 #clean-services:
 #	docker image rm zenports-gates zenports-ntps zenports-notifications
 #
-#build-monolith:
-#	docker build -t zenports-monolith --file docker/Dockerfile .
-#
+build-monolith:
+	docker build -t zenports-monolith --file docker/Dockerfile .
+
 #build-services:
 #	docker build -t zenports-gates --file docker/Dockerfile.microservices --build-arg=service=gates .
 #	docker build -t zenports-ntps --file docker/Dockerfile.microservices --build-arg=service=ntps .
