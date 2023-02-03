@@ -5,9 +5,12 @@
 #### 🙌👨‍💻🚀 Docker-compose files easy lunch:
 
     docker-compose.yml
-    sudo docker compose up --build
+    if you run it before clean the volume
+    strp1: sudo docker compose down --rmi all --volumes
+    strp2: sudo docker compose up --build
 
 ```
+strp3:
 curl -X 'POST' \
 'http://localhost:8080/api/times' \
 -H 'accept: application/json' \
