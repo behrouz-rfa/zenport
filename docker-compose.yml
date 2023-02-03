@@ -25,7 +25,8 @@ services:
     image: postgres:latest
     restart: always
     environment:
-      POSTGRES_PASSWORD: itsasecret
+      POSTGRES_USER: "zenports_user"
+      POSTGRES_PASSWORD: "zenports_pass"
     ports:
       - '5434:5432'
     volumes:
