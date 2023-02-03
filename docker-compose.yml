@@ -29,7 +29,7 @@ services:
     ports:
       - '5434:5432'
     volumes:
-      - 'pgdata1:/var/lib/postgresql/data'
+      - 'pgdata:/var/lib/postgresql/data'
       - './docker/database:/docker-entrypoint-initdb.d'
   nats:
     container_name: nats
@@ -133,25 +133,18 @@ services:
 #    profiles:
 #      - microservices
 
-  reverse-proxy:
-    container_name: proxy
-    hostname: proxy
-    image: nginx:alpine
-    ports:
-      - '8080:8080'
-    volumes:
-      - './docker/nginx.conf:/etc/nginx/nginx.conf'
-    profiles:
-      - microservices
-#  integration:
-#    build:
-#      context: .
-#      dockerfile: integration-test/Dockerfile
-#    container_name: integration
-#    image: integration
-#    depends_on:
-#      - monolith
+#  reverse-proxy:
+#    container_name: proxy
+#    hostname: proxy
+#    image: nginx:alpine
+#    ports:
+#      - '8080:8080'
+#    volumes:
+#      - './docker/nginx.conf:/etc/nginx/nginx.conf'
+#    profiles:
+#      - microservices
+
 
 volumes:
-  pgdata1:
+  pgdata:
   jsdata:
