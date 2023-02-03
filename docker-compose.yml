@@ -22,11 +22,10 @@ services:
   postgres:
     container_name: postgres-zen
     hostname: postgres
-    image: postgres:latest
+    image: postgres:12-alpine
     restart: always
     environment:
-      POSTGRES_USER: "zenports_user"
-      POSTGRES_PASSWORD: "zenports_pass"
+      POSTGRES_PASSWORD: itsasecret
     ports:
       - '5434:5432'
     volumes:
