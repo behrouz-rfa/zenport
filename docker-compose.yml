@@ -14,16 +14,15 @@ services:
     env_file:
       - docker/.env
     depends_on:
+      - postgres
       - nats
       - rabbit1
-      - postgres
     command: [ "./wait-for", "postgres:5432", "--", "/zenports/monolith" ]
 
   postgres:
     container_name: postgres-zen
     hostname: postgres
     image: postgres:12-alpine
-    restart: always
     environment:
       POSTGRES_PASSWORD: itsasecret
     ports:
