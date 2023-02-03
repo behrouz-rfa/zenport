@@ -20,7 +20,7 @@ services:
     command: [ "./wait-for", "postgres:5432", "--", "/zenports/monolith" ]
 
   postgres:
-    container_name: postgres
+    container_name: postgres-zen
     hostname: postgres
     image: postgres:latest
     restart: always
@@ -28,9 +28,6 @@ services:
       POSTGRES_PASSWORD: itsasecret
     ports:
       - '5434:5432'
-    volumes:
-      - db2:/var/lib/postgresql/data1
-      - ./docker/database:/docker-entrypoint-initdb.d
   nats:
     container_name: nats
     hostname: nats
