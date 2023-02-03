@@ -28,6 +28,9 @@ services:
       POSTGRES_PASSWORD: itsasecret
     ports:
       - '5434:5432'
+    volumes:
+      - 'pgdata1:/var/lib/postgresql/data'
+      - './docker/database:/docker-entrypoint-initdb.d'
   nats:
     container_name: nats
     hostname: nats
@@ -150,5 +153,5 @@ services:
 #      - monolith
 
 volumes:
-  db2:
+  pgdata1:
   jsdata:
